@@ -1,5 +1,7 @@
-import PortalVisual from '@/components/cinematic/PortalVisual';
 import Journey from '@/components/cinematic/Journey';
 import Navigation from '@/components/navigation/Navigation';
 import Portfolio from '@/components/portfolio/Portfolio';
-export default function Home(){return <><Navigation/><main id="main"><div className="portfolio-home"><section className="hero-section" aria-label="Welcome to Razan’s portfolio"><div className="hero-content"><p className="hero-label">WELCOME TO MY WORLD</p><h1 className="hero-title">Hi, I&apos;m <span>Razan.</span></h1><h2 className="hero-role">Full Stack Developer</h2><p className="hero-description">Building intelligent digital experiences through software, AI, and creativity.</p><div className="hero-actions"><a className="button" href="#journey">Enter my world <span aria-hidden="true">↓</span></a><a className="text-link" href="#projects">Skip Journey ↗</a></div><p className="hero-chapter">✦ A JOURNEY THROUGH MY STORY</p></div><div className="hero-gateway"><PortalVisual/></div><a className="scroll-hint" href="#journey">SCROLL TO EXPLORE <span>↓</span></a></section></div><Journey/><Portfolio/></main></>}
+
+export default function Home() {
+  return <><Navigation/><main id="main"><Journey/><Portfolio/></main></>;
+}

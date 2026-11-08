@@ -1,2 +1,30 @@
-import { chapters } from '@/data/journey';
-export default function JourneyTree(){return <svg className="journey-tree" viewBox="0 0 600 850" aria-hidden="true"><defs><linearGradient id="bark" x1="0" x2="1"><stop stopColor="#111626"/><stop offset=".42" stopColor="#46406d"/><stop offset=".6" stopColor="#a098c9"/><stop offset=".73" stopColor="#34304d"/><stop offset="1" stopColor="#111524"/></linearGradient><radialGradient id="crown"><stop stopColor="#b19cfc" stopOpacity=".26"/><stop offset=".6" stopColor="#4774b3" stopOpacity=".18"/><stop offset="1" stopColor="#173755" stopOpacity="0"/></radialGradient><filter id="bloom"><feGaussianBlur stdDeviation="3"/></filter></defs><ellipse cx="300" cy="310" rx="285" ry="260" fill="url(#crown)"/>{Array.from({length:100},(_,i)=>{const a=i*2.39996;const r=Math.sqrt((i+1)/100);const x=300+Math.cos(a)*r*255,y=310+Math.sin(a)*r*235;return <g key={i}><ellipse cx={x} cy={y} rx={17+i%18} ry={12+i%12} fill={['#345678','#576092','#695986','#365e79'][i%4]} opacity={.09+(i%4)*.025}/><circle cx={x} cy={y} r={i%6===0?1.8:.7} fill={i%3===0?'#aeefff':'#c7a9fc'} opacity=".65"/></g>})}<path d="M205 790 Q260 730 268 671 C242 614 280 574 298 530 C338 458 258 412 285 347 Q310 290 307 215 Q326 306 313 360 C296 415 365 452 337 526 Q298 602 315 665 Q335 742 406 790 Q326 770 294 724 Q270 770 205 790Z" fill="url(#bark)" stroke="#a4a0d0" strokeOpacity=".2"/>{Array.from({length:15},(_,i)=><path key={i} d={`M${200+i*14} 800 Q${260+i*3} 730 ${280+i*2} 670 Q${260+i*3} 605 ${306+i} 540 Q${352-i} 465 ${295+i} 390`} fill="none" stroke={i%3===0?'#9293bd':'#0c1222'} opacity=".35" strokeWidth={i%3===0?1:3}/>)}{chapters.map((c,i)=>{const [x,y]=c.point;const d=`M${i===0?290:310} ${i===0?700:520-i*65} Q${x+30} ${y+90} ${x} ${y} Q${x-20} ${y-35} ${x+10} ${y-65}`;return <g className="tree-branch" data-branch={i} key={c.id}><path d={d} fill="none" stroke="#4d4a70" strokeWidth={12-i*1.6} strokeLinecap="round"/><path d={d} className="branch-light" fill="none" stroke="#c5b9ff" strokeWidth="2"/><path d={`M${x} ${y+12}q-40 -5 -65 -50m65 50q35 -35 52 -65m-52 65q-25 -45 -20 -83`} fill="none" stroke="#777295" strokeWidth="1.5"/><circle className="branch-light" cx={x} cy={y} r="13" fill="#b1c4ff" filter="url(#bloom)"/><circle cx={x} cy={y} r="3" fill="#d0c9ff"/></g>})}{Array.from({length:22},(_,i)=><path key={i} d={`M${292+i%4*6} ${320+i%5*23} Q${160+i*12} ${220+i%4*30} ${65+i*22} ${150+i%5*25}`} stroke="#787293" strokeWidth={.6+i%3*.5} fill="none" opacity=".5"/>)}<ellipse cx="300" cy="787" rx="180" ry="28" fill="url(#crown)"/></svg>}
+import Image from 'next/image';
+import { cinematicTiming } from '@/data/cinematic';
+
+/** Artwork and interaction anchors share the same 1200 × 1800 coordinate system. */
+export default function JourneyTree() {
+  return (
+    <div className="celestial-tree">
+      <Image src="/cinematic/celestial-tree.webp" alt="" fill sizes="(max-width: 700px) 140vw, 1000px" quality={90} className="tree-painting" />
+      <svg className="tree-light-map" viewBox="0 0 1200 1800" aria-hidden="true">
+        <defs>
+          <filter id="branch-bloom"><feGaussianBlur stdDeviation="9" /></filter>
+          <linearGradient id="branch-energy" x1="0" y1="1" x2="1" y2="0"><stop stopColor="#9c8bd3" stopOpacity="0"/><stop offset="1" stopColor="#d9faff"/></linearGradient>
+        </defs>
+        {cinematicTiming.chapters.map((chapter, index) => {
+          const x = chapter.point[0] * 1200;
+          const y = chapter.point[1] * 1800;
+          const d = `M600 ${Math.min(y + 190, 1490)} Q${x + (x < 600 ? 75 : -75)} ${y + 100} ${x} ${y}`;
+          return <g key={index} className="branch-energy" data-branch={index}>
+            <path d={d} fill="none" stroke="#a6c9ff" strokeWidth="14" opacity=".5" filter="url(#branch-bloom)"/>
+            <path className="branch-trace" d={d} fill="none" stroke="url(#branch-energy)" strokeWidth="2" pathLength="1"/>
+            <circle cx={x} cy={y} r="35" fill="#beadff" filter="url(#branch-bloom)" opacity=".65"/>
+            <circle className="arrival-ring" cx={x} cy={y} r="24" fill="none" stroke="#deedff" strokeWidth="1"/>
+            <circle cx={x} cy={y} r="3" fill="#fff"/>
+          </g>;
+        })}
+      </svg>
+      <div className="tree-inner-light" />
+    </div>
+  );
+}

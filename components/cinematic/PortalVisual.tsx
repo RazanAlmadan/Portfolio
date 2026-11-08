@@ -21,7 +21,7 @@ const stars = [
     { top: "88%", left: "42%", size: 2, delay: 2.4, depth: "far" },
 ];
 
-export default function PortalVisual() {
+export default function PortalVisual({ showButterfly = true }: { showButterfly?: boolean }) {
 
     // Move stars according to mouse position
     const handleMouseMove = (e: PointerEvent<HTMLDivElement>) => {
@@ -87,7 +87,7 @@ export default function PortalVisual() {
                     ))}
             </div>
 
-            <Butterfly />
+            {showButterfly && <Butterfly />}
 
             {/* Portal */}
             <div className="portal-door">
@@ -120,3 +120,4 @@ export default function PortalVisual() {
         </div>
     );
 }
+
