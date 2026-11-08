@@ -1,0 +1,2 @@
+export const profile: {name:string; resumeUrl?:string; email?:string; githubUrl?:string; linkedinUrl?:string} = {name:'Razan'};
+export const skillGroups = [ {name:'Engineering',items:['Java','Spring Boot','REST APIs','JPA / Hibernate']}, {name:'Web development',items:['HTML','CSS','JavaScript','Full-stack applications']}, {name:'Intelligent applications',items:['AI integrations','External APIs','YOLOv8','Computer vision']} ];
