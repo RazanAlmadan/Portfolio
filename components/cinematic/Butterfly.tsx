@@ -1,2 +1,39 @@
 import { useId } from 'react';
-export default function Butterfly(){const id=useId();return <div className="butterfly-wrap" aria-hidden="true"><div className="butterfly-float"><div className="butterfly-glow"/><svg className="butterfly-svg" viewBox="0 0 120 100"><defs><linearGradient id={id} x2="1" y2="1"><stop stopColor="#b9faff" stopOpacity=".8"/><stop offset=".5" stopColor="#b5a4f7" stopOpacity=".35"/><stop offset="1" stopColor="#f7c9ff" stopOpacity=".75"/></linearGradient></defs>{[-1,1].map(side=><g key={side} transform={side===-1?'translate(120 0) scale(-1 1)':undefined}><g className="delicate-wing"><path d="M60 48 C72 24 96 1 110 8 C120 18 101 48 64 52 C91 48 107 57 100 72 C96 86 87 82 89 94 C76 89 65 72 60 54Z" fill={`url(#${id})`} stroke="#c9f7ff" strokeWidth=".7"/><path d="M61 50L108 12M63 50Q91 34 110 28M63 51Q90 47 102 40M62 53L97 68M62 54L88 86M80 30Q86 39 83 48M77 59Q75 69 85 78" fill="none" stroke="#d6faff" strokeWidth=".45" opacity=".7"/>{[0,1,2,3,4].map(n=><circle key={n} cx={76+n*5} cy={24+n*6} r=".9" fill="#f6e8ff"/>)}</g></g>)}<path d="M60 36Q55 51 60 70Q65 52 60 36M58 36Q49 22 52 20M62 36Q71 22 68 20" fill="#e6faff" stroke="#d2f6ff" strokeWidth="1"/></svg></div></div>}
+
+/** One lightweight SVG guide, used throughout the entire journey. */
+export default function Butterfly() {
+  const uid = useId().replace(/:/g, '');
+  return (
+    <div className="cin-butterfly" aria-hidden="true">
+      <span className="cin-butterfly-halo" />
+      <svg viewBox="0 0 120 108" xmlns="http://www.w3.org/2000/svg" className="cin-butterfly-svg">
+        <defs>
+          <linearGradient id={`${uid}-wing`} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#e5fcff" stopOpacity="0.95" />
+            <stop offset=".45" stopColor="#9fc8fa" stopOpacity="0.65" />
+            <stop offset="1" stopColor="#d5a7ff" stopOpacity="0.88" />
+          </linearGradient>
+          <linearGradient id={`${uid}-lower`} x1="0" y1="0" x2=".8" y2="1">
+            <stop offset="0" stopColor="#eaf8ff" stopOpacity="0.88" />
+            <stop offset="1" stopColor="#bd9bea" stopOpacity="0.73" />
+          </linearGradient>
+        </defs>
+        <g className="cin-wing cin-wing-left">
+          <path d="M59 50 C42 18 17 0 8 14 C-2 37 19 56 58 56 Z" fill={`url(#${uid}-wing)`} stroke="#e7faff" strokeWidth="1.4"/>
+          <path d="M58 57 C38 52 21 61 25 76 C31 87 42 82 38 98 C52 91 60 76 60 60 Z" fill={`url(#${uid}-lower)`} stroke="#e9e0ff" strokeWidth="1.2"/>
+          <path d="M56 52 Q39 27 12 18 M53 54 Q35 42 17 40 M56 58 Q38 65 31 76 M54 63 Q48 78 39 88" fill="none" stroke="#f1ffff" strokeWidth=".9" opacity=".72" />
+          <path d="M14 16 Q28 15 39 27 M16 40 Q24 51 38 52" fill="none" stroke="#f1d7ff" strokeWidth="1.1" opacity=".7"/>
+        </g>
+        <g className="cin-wing cin-wing-right">
+          <path d="M61 50 C78 18 103 0 112 14 C122 37 101 56 62 56 Z" fill={`url(#${uid}-wing)`} stroke="#e7faff" strokeWidth="1.4"/>
+          <path d="M62 57 C82 52 99 61 95 76 C89 87 78 82 82 98 C68 91 60 76 60 60 Z" fill={`url(#${uid}-lower)`} stroke="#e9e0ff" strokeWidth="1.2"/>
+          <path d="M64 52 Q81 27 108 18 M67 54 Q85 42 103 40 M64 58 Q82 65 89 76 M66 63 Q72 78 81 88" fill="none" stroke="#f1ffff" strokeWidth=".9" opacity=".72" />
+          <path d="M106 16 Q92 15 81 27 M104 40 Q96 51 82 52" fill="none" stroke="#f1d7ff" strokeWidth="1.1" opacity=".7"/>
+        </g>
+        <path d="M59.5 34 Q55 51 59.5 76 Q64 51 60.5 34Z" fill="#f3fcff" />
+        <circle cx="60" cy="34" r="3.5" fill="#fff" />
+        <path d="M59 33 Q47 17 45 19 M61 33 Q73 17 75 19" fill="none" stroke="#e7faff" strokeLinecap="round" strokeWidth="1.2" />
+      </svg>
+    </div>
+  );
+}

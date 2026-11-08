@@ -1,173 +1,118 @@
-/* The fallback is a linear, readable story. GSAP enables the sticky cinematic stage. */
-.cinematic {
-  position: relative;
-  background: #080b14;
-  isolation: isolate;
-}
-.cinema-frame { position: relative; overflow: clip; }
-.gateway-scene {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr 1.1fr;
-  align-items: center;
-  min-height: 90svh;
-  padding: 55px 6%;
-  gap: 25px;
-  background: radial-gradient(ellipse at 78% 48%, #5d35802b, transparent 65%);
-}
-.gateway-copy { position: relative; z-index: 2; max-width: 620px; }
-.gateway-visual { position: relative; height: min(650px, 80svh); min-width: 0; transform-origin: 50% 58%; }
-.world-camera { position: relative; height: 80svh; }
-.world-geometry {
-  position: absolute;
-  width: min(84vw, 880px);
-  aspect-ratio: 2 / 3;
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%);
-}
-.celestial-tree { position: relative; width: 100%; aspect-ratio: 2 / 3; }
-.tree-painting { object-fit: contain; }
-.tree-light-map { position: absolute; inset: 0; width: 100%; height: 100%; mix-blend-mode: screen; }
-.branch-energy { opacity: .6; }
-.tree-inner-light {
-  position: absolute; inset: 12% 16% 30%; pointer-events: none;
-  background: radial-gradient(ellipse, #b9a4f412, transparent 65%);
-  mix-blend-mode: screen;
-}
-.world-reveal:has(.celestial-tree) { width: 100%; }
-.world-guide { position: absolute; z-index: 4; width: 90px; height: 75px; pointer-events: none; }
-.world-guide .butterfly-wrap { position: relative; width: 100%; height: 100%; left: 0; top: 0; transform: none; transition: none; }
-.world-guide .butterfly-float { animation: none; }
-.world-guide .delicate-wing { animation-duration: .65s; }
-.world-guide .butterfly-svg { filter: drop-shadow(0 0 5px #d1f6ff) drop-shadow(0 0 18px #be98ff88); }
-.guide-trail {
-  position: absolute; width: 95px; height: 12px; top: 40%; right: 35%;
-  border-radius: 50%; transform: rotate(-25deg);
-  background: linear-gradient(90deg, transparent, #a9d7f833);
-  filter: blur(5px);
-}
-.cinema-chapter { position: relative; max-width: 660px; margin: auto; padding: 65px 6%; }
-.cinema-chapter h2, .world-ending h2 { font: 400 clamp(35px, 3.7vw, 64px)/1.08 Georgia, serif; letter-spacing: -.035em; margin: 20px 0; text-wrap: balance; }
-.cinema-chapter p { font-size: 14px; line-height: 1.85; color: #c1bdd0; }
-.cinema-chapter .cinema-lead { color: #f1ecf8; font-size: 17px; }
-.world-ending { position: relative; padding: 70px 6%; text-align: center; }
-.world-ending .text-link { color: #d4c4f6; }
-.cinema-hud, .chapter-compass, .cinema-progress, .portal-flash, .far-nebula, .near-mist, .foreground-boughs, .scene-vignette, .scene-stars, .exit-shade, .world-guide { display: none; }
+/* ENTER MY WORLD — performance-first cinematic storytelling.
+   The fixed-height sticky stage transforms only a single illustration and guide.
+   No huge blur layers, WebGL render loops, or competing scroll timelines. */
+.cinematic { position: relative; background: #080b14; isolation: isolate; }
+.cin-frame { position: relative; min-height: min(900px, 96svh); overflow: hidden; background: #080b17; }
+.cin-ambient { position: absolute; inset: 0; background: radial-gradient(ellipse at 78% 37%,#382452 0%,#17132a 31%,transparent 65%),radial-gradient(ellipse at 23% 78%,#111a2c 0%,transparent 55%); pointer-events: none; }
+.cin-stars { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 1; }
+.cin-stars i { display: block; position: absolute; border-radius: 50%; background: #deeeff; box-shadow: 0 0 7px #beccfa88; }
+.cin-gateway { position: relative; z-index: 3; min-height: min(900px, 96svh); display: grid; align-items: center; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 4%; padding: 50px 6%; }
+.cin-hero-content { z-index: 2; position: relative; max-width: 670px; }
+.cin-hero-content .hero-title { font-size: clamp(56px,6.2vw,106px); }
+.cin-hero-content .hero-description { max-width: 600px; }
+.cin-hero-content .hero-actions { display:flex; align-items:center; gap:22px; justify-content: flex-start; margin: 26px 0; }
+.cin-gateway-portal { position: relative; width: 100%; height: min(680px,80svh); min-width: 0; transform-origin: 50% 53%; }
+.cin-gateway-portal .portal-scene { min-height: 0; }
+.cin-world { position: absolute; inset: 0; pointer-events: none; z-index: 2; opacity: 0; overflow: hidden; }
+.cin-world-aura { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 59%,#39316a66,transparent 60%),linear-gradient(180deg,#080b14,#141325 55%,#070b16); }
+.cin-tree-camera { --camera-x: 0px; --camera-y: 0px; --camera-scale: 1; position:absolute; width:min(55vw,760px); aspect-ratio: 2 / 3; top:50%; left:50%; transform: translate(-50%,-50%) translate3d(var(--camera-x),var(--camera-y),0) scale(var(--camera-scale)); transform-origin: center center; backface-visibility: hidden; }
+.cin-tree-art { position:relative; width:100%; height:100%; aspect-ratio:2 / 3; }
+.cin-tree-painting { object-fit:contain; }
+.cin-tree-luminosity { position: absolute; inset: 6% 12% 10%; pointer-events: none; background: radial-gradient(ellipse at 50% 52%,#f0e8ff14 0%,transparent 62%); }
+.cin-tree-marker { position:absolute; width: 34px; height: 34px; transform: translate(-50%,-50%); display:grid; place-items:center; opacity: .15; transition: opacity .4s ease; }
+.cin-tree-marker-core { position:relative; width: 5px; height: 5px; border-radius:50%; background:#e9faff; box-shadow:0 0 9px 3px #afe9ff55; }
+.cin-tree-marker-ring { position:absolute; inset: 2px; border:1px solid #c2edffbb; border-radius:50%; transform:scale(.7); transition:transform .4s ease; }
+.cin-tree-marker.is-lit { opacity: 1; }
+.cin-tree-marker.is-lit .cin-tree-marker-ring { transform: scale(1.15); box-shadow: 0 0 14px 3px #b8caff55; }
+.cin-world-label { position:absolute; bottom:10%; width:100%; text-align:center; font-size: 9px; letter-spacing:.34em; color:#d0c0eb99; }
+.cin-guide { position: absolute; z-index: 8; left:78%; top:31%; width:86px; height:78px; pointer-events:none; transform:translate(-50%,-50%) rotate(var(--fly-angle,-12deg)); }
+.cin-butterfly { width:100%; height:100%; position:relative; animation:cin-butterfly-hover 3.4s ease-in-out infinite; }
+.cin-butterfly-svg { display:block; width:100%; height:100%; position:relative; z-index:2; filter:drop-shadow(0 0 5px #dcfaff99); }
+.cin-butterfly-halo { position:absolute; inset:20%; border-radius:50%; background:radial-gradient(circle,#c4eaffbb,transparent 72%); opacity:.55; }
+.cin-wing-left { transform-origin:59px 54px; animation:cin-wing-flutter-left 1.06s ease-in-out infinite alternate; }
+.cin-wing-right { transform-origin:61px 54px; animation:cin-wing-flutter-right 1.06s ease-in-out infinite alternate; }
+@keyframes cin-wing-flutter-left { from { transform:scaleX(.68) rotate(-3deg); } to { transform:scaleX(1) rotate(3deg); } }
+@keyframes cin-wing-flutter-right { from { transform:scaleX(.68) rotate(3deg); } to { transform:scaleX(1) rotate(-3deg); } }
+@keyframes cin-butterfly-hover { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+.cin-guide-trail { position:absolute; z-index:0; right:67%; top:55%; width:30px; height:2px; background:linear-gradient(90deg,transparent,#bdeaffaa); border-radius:50%; }
+.cin-transit-flash { display:none; }
+.cin-chapter-layer { display:none; }
+.cin-chapter { color:#f8f1ff; }
+.cin-chapter h2,.cin-ending h2 { font:400 clamp(32px,3.45vw,58px)/1.1 Georgia,serif; letter-spacing:-.04em; margin:18px 0; text-wrap:balance; }
+.cin-chapter p:not(.eyebrow) { color:#cfcadd; font-size:14px; line-height:1.85; }
+.cin-chapter .cin-lead { color:#f0e9fa!important; font-size:17px!important; }
+.cin-chapter .tags { margin-bottom:0; }
+.cin-ending { display:none; }
+.cin-vignette { pointer-events:none; position:absolute; inset:0; z-index:4; background:linear-gradient(180deg,#070b1514 0%,transparent 24%,transparent 68%,#080b1577 100%); }
+.cin-hud { display:none; }
+.cin-progress { display:none; }
+.cin-static-story { display:block; padding:0 6% 70px; }
+.cin-static-art { position:relative; max-width:min(480px,90vw); margin:auto; padding:30px 0 18px; }
+.cin-static-art .cin-tree-art { height:auto; }
+.cin-static-art p { font-size:8px; letter-spacing:.12em; text-align:center; color:#a8a1c6; }
+.cin-static-chapter { max-width:700px; margin:0 auto; padding:42px 0; border-bottom:1px solid #c4b5fd26; }
+.cin-static-chapter h2 { font:400 clamp(35px,5vw,54px)/1.1 Georgia,serif; margin:15px 0 20px; }
+.cin-static-chapter p:not(.eyebrow) { font-size:15px; line-height:1.8; color:#c5c1d4; }
+.cin-static-projects { margin:35px auto 0; width:max-content; display:flex; }
 
-/* A single continuous camera stage from the portal to the final tree reveal. */
-.cinematic.is-enhanced { height: 1100svh; }
-.is-enhanced .cinema-frame { position: sticky; top: 0; width: 100%; height: 100svh; }
-.is-enhanced .gateway-scene { position: absolute; inset: 0; min-height: 0; height: 100%; z-index: 2; }
-.is-enhanced .world-camera { position: absolute; inset: 0; height: 100%; z-index: 3; pointer-events: none; will-change: transform; }
-.is-enhanced .world-guide { display: block; }
-.is-enhanced .world-geometry { width: min(84vw, 880px); }
-.is-enhanced .tree-painting {
-  /* Soft margins let the painted environment dissolve into the parallax atmosphere. */
-  mask-image: radial-gradient(ellipse 67% 62% at 50% 49%, #000 50%, transparent 92%);
+/* Enhanced desktop presentation; enabled only if motion is allowed. */
+.cinematic.is-cinematic { height: 760svh; }
+.is-cinematic .cin-frame { min-height:0; position:sticky; top:0; height:100svh; width:100%; overflow:hidden; }
+.is-cinematic .cin-gateway { position:absolute; inset:0; min-height:0; height:100%; opacity:var(--gateway-opacity,1); pointer-events:auto; }
+.is-cinematic .cin-gateway-portal { transform:scale(var(--gateway-scale,1)); }
+.is-cinematic .cin-world { opacity:var(--world-opacity,0); }
+.is-cinematic .cin-transit-flash { display:block; position:absolute; inset:0; z-index:7; background:#ead5ff; opacity:var(--scene-flash,0); pointer-events:none; }
+.is-cinematic .cin-chapter-layer { display:block; position:absolute; inset:0; z-index:6; pointer-events:none; }
+.is-cinematic .cin-chapter { position:absolute; top:50%; left:6%; width:min(36vw,490px); max-height:75svh; overflow-y:auto; transform:translateY(-50%); pointer-events:none; opacity:0; padding:22px 25px 26px; border-left:1px solid #cab4f255; background:linear-gradient(90deg,#080b14ec,#080b14a8 74%,transparent); text-shadow:0 2px 18px #050510; }
+.is-cinematic .cin-chapter--right { right:6%; left:auto; border-left:none; border-right:1px solid #cab4f255; background:linear-gradient(270deg,#080b14ec,#080b14a8 74%,transparent); }
+.is-cinematic .cin-chapter .eyebrow { color:#b8eaff!important; }
+.is-cinematic .cin-ending { display:block; position:absolute; bottom:12%; left:0; width:100%; z-index:7; opacity:var(--ending-opacity,0); text-align:center; pointer-events:none; }
+.is-cinematic .cin-ending h2 { font-size:clamp(45px,5vw,84px); text-shadow:0 2px 30px #090b1a; }
+.is-cinematic .cin-ending .text-link { pointer-events:auto; color:#c4b5fd; }
+.is-cinematic .cin-hud { display:flex; position:absolute; bottom:26px; left:5%; right:5%; z-index:10; align-items:center; justify-content:space-between; font-size:10px; color:#c4bad3; letter-spacing:.12em; }
+.is-cinematic .cin-hud a { color:#e0cfff; border:1px solid #c8affc44; padding:9px 14px; border-radius:20px; background:#080b1477; }
+.is-cinematic .cin-hud a:hover { border-color:#c4b5fd; }
+.is-cinematic .cin-hud-left { color:#b0a3c9; }
+.is-cinematic .cin-hud-right { font-size:9px; }
+.is-cinematic .cin-progress { display:block; position:absolute; bottom:0; left:0; width:100%; height:2px; z-index:11; background:#b6a3e91a; }
+.is-cinematic .cin-progress span { display:block; height:100%; width:100%; background:linear-gradient(90deg,#aa8aeb,#c7f8ff); transform:scaleX(var(--journey-progress,0)); transform-origin:left; }
+.is-cinematic .cin-static-story { display:none; }
+
+@media (max-width:1050px) {
+  .cin-hero-content .hero-title { font-size:clamp(46px,5.8vw,76px); }
+  .is-cinematic .cin-chapter { width:39vw; left:4%; padding:18px; }
+  .is-cinematic .cin-chapter--right { right:4%; left:auto; }
+  .cin-chapter h2 { font-size:clamp(31px,3.4vw,44px); }
+  .cin-chapter p:not(.eyebrow) { font-size:13px; line-height:1.68; }
+  .cin-chapter .cin-lead { font-size:15px!important; }
 }
-.is-enhanced .cinema-captions { position: absolute; inset: 0; pointer-events: none; z-index: 9; }
-.is-enhanced .cinema-chapter {
-  position: absolute; top: 50%; transform: translateY(-50%);
-  width: min(34vw, 470px); padding: 26px 0; margin: 0;
-  opacity: 0; visibility: hidden;
-  text-shadow: 0 2px 18px #050810;
+@media (max-width:800px) {
+  .cin-frame { min-height:0; }
+  .cin-gateway { display:flex; flex-direction:column; justify-content:center; padding:65px 7% 35px; min-height:calc(100svh - 80px); gap:0; }
+  .cin-hero-content { text-align:center; }
+  .cin-hero-content .hero-title { font-size:clamp(48px,10vw,76px); }
+  .cin-hero-content .hero-label { margin-bottom:15px; font-size:9px; }
+  .cin-hero-content .hero-role { font-size:25px; margin-bottom:14px; }
+  .cin-hero-content .hero-description { font-size:14px; margin:auto; max-width:350px; }
+  .cin-hero-content .hero-actions { justify-content:center; flex-wrap:wrap; }
+  .cin-hero-content .hero-chapter { display:none; }
+  .cin-gateway-portal { height:min(42svh,360px); width:100%; max-width:500px; }
+  .cin-gateway-portal .portal-door { width:min(45%,190px); height:75%; bottom:10%; }
+  .cin-world,.cin-chapter-layer,.cin-ending,.cin-hud,.cin-progress,.cin-transit-flash { display:none; }
+  .cin-guide { left:75%; top:65%; width:67px; height:60px; }
+  .cin-static-art { max-width:min(440px,85vw); }
 }
-.is-enhanced .cinema-chapter:before {
-  content: ''; position: absolute; inset: -80px -70px; z-index: -1; pointer-events: none;
-  background: radial-gradient(ellipse, #080b14ef 15%, #080b1499 47%, transparent 72%);
+@media (max-width:500px) {
+  .cin-gateway { padding-top:50px; }
+  .cin-hero-content .hero-title { font-size:clamp(43px,10.1vw,62px); }
+  .cin-hero-content .hero-actions { margin:21px 0 8px; gap:12px; }
+  .cin-hero-content .button { padding:12px 16px; }
+  .cin-gateway-portal { height:34svh; }
+  .cin-guide { top:69%; left:75%; width:60px; height:56px; }
+  .cin-static-story { padding: 0 7% 55px; }
+  .cin-static-chapter { padding:35px 0; }
 }
-.is-enhanced .caption-right { right: 7%; }
-.is-enhanced .caption-left { left: 7%; }
-.is-enhanced .cinema-chapter h2 { font-size: clamp(34px, 3.4vw, 57px); }
-.is-enhanced .cinema-chapter .eyebrow { font-size: 9px !important; }
-.is-enhanced .cinema-chapter .tags { margin-bottom: 0; }
-.is-enhanced .far-nebula {
-  display: block; position: absolute; inset: -25%; pointer-events: none; z-index: 0;
-  background: radial-gradient(ellipse at 65% 35%, #4b376849, transparent 40%), radial-gradient(ellipse at 25% 75%, #164b643f, transparent 40%), #080b14;
+@media (prefers-reduced-motion:reduce) {
+  .cin-butterfly,.cin-wing-left,.cin-wing-right { animation:none!important; }
+  .cin-tree-marker,.cin-tree-marker-ring { transition:none!important; }
 }
-.is-enhanced .near-mist {
-  display: block; position: absolute; inset: -30%; z-index: 5; pointer-events: none;
-  background: radial-gradient(ellipse at 25% 80%, #b2a0e41f, transparent 30%), radial-gradient(ellipse at 80% 25%, #4895c315, transparent 35%);
-}
-.is-enhanced .foreground-boughs { display: block; position: absolute; inset: -3%; width: 106%; height: 106%; z-index: 6; pointer-events: none; }
-.is-enhanced .scene-stars { display: block; position: absolute; inset: 0; z-index: 1; pointer-events: none; }
-.scene-stars i { position: absolute; border-radius: 50%; background: #d7ecff; box-shadow: 0 0 6px #b6c8ff; }
-.is-enhanced .scene-vignette { display: block; position: absolute; inset: 0; z-index: 7; pointer-events: none; box-shadow: inset 0 0 110px 30px #06091299; background: linear-gradient(#080b1422, transparent 30%, transparent 75%, #080b1477); }
-.is-enhanced .portal-flash { display: block; position: absolute; inset: 0; z-index: 8; background: radial-gradient(ellipse, #eedbff, #ad88e8 50%, #604690); opacity: 0; visibility: hidden; pointer-events: none; }
-.is-enhanced .world-ending { position: absolute; inset: auto 0 12%; padding: 0; z-index: 10; opacity: 0; visibility: hidden; text-shadow: 0 3px 30px #080b14; }
-.is-enhanced .world-ending h2 { font-size: clamp(35px, 4vw, 64px); }
-.is-enhanced .exit-shade { display: block; position: absolute; inset: 0; z-index: 8; background: linear-gradient(transparent, #080b14 94%); opacity: 0; pointer-events: none; }
-.is-enhanced .cinema-hud { display: flex; position: absolute; bottom: 32px; left: 5%; right: 5%; align-items: center; justify-content: space-between; z-index: 12; font-size: 10px; color: #c9bddb; letter-spacing: .08em; }
-.cinema-hud>span { font-size: 8px; letter-spacing: .22em; }
-.cinema-hud .hud-mark { font-size: 18px; color: #bde6ff; }
-.is-enhanced .chapter-compass { display: flex; position: absolute; z-index: 12; right: 23px; top: 50%; transform: translateY(-50%); flex-direction: column; gap: 20px; }
-.chapter-compass a { display: flex; align-items: center; gap: 10px; min-width: 28px; min-height: 24px; }
-.chapter-compass span { font-size: 8px; color: #bdb4d3; }
-.chapter-compass i { display: block; width: 4px; height: 4px; border-radius: 50%; background: #cab6ef; }
-.chapter-compass a:hover i { box-shadow: 0 0 12px 3px #cbb2fa77; }
-.is-enhanced .cinema-progress { display: block; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; z-index: 12; background: #c8b5ef16; }
-.cinema-progress-fill { height: 100%; background: linear-gradient(90deg, #9d78d1, #c5f1ff); transform: scaleX(0); transform-origin: left; }
-@media (min-width: 1600px) { .is-enhanced .world-geometry { width: 1000px; } }
-@media (max-width: 900px) {
-  .gateway-scene { padding: 50px 5%; gap: 5px; }
-  .gateway-copy .hero-title { font-size: clamp(48px, 7vw, 75px); }
-  .gateway-copy .hero-role { font-size: 26px; }
-  .gateway-copy .hero-description { font-size: 14px; }
-  .gateway-copy .hero-actions { justify-content: flex-start; gap: 15px; }
-  .gateway-copy .button { padding: 13px 17px; }
-  .is-enhanced .cinema-chapter { width: 37vw; }
-  .is-enhanced .caption-right { right: 6%; }
-  .is-enhanced .caption-left { left: 6%; }
-  .is-enhanced .cinema-chapter h2 { font-size: 36px; }
-  .is-enhanced .cinema-chapter p { font-size: 12px; line-height: 1.7; }
-  .is-enhanced .cinema-chapter .cinema-lead { font-size: 15px; }
-  .is-enhanced .chapter-compass { right: 10px; }
-  .chapter-compass span { display: none; }
-}
-@media (max-width: 699px) {
-  .cinematic.is-enhanced { height: 1250svh; }
-  .gateway-scene { grid-template-columns: 1fr; grid-template-rows: auto 1fr; padding: 38px 7% 35px; align-content: center; gap: 0; }
-  .gateway-copy { text-align: center; margin: auto; }
-  .gateway-copy .hero-title { font-size: clamp(43px, 10vw, 65px); margin-bottom: 13px; }
-  .gateway-copy .hero-role { font-size: 24px; margin-bottom: 15px; }
-  .gateway-copy .hero-label { margin: 0 0 18px; font-size: 9px; }
-  .gateway-copy .hero-description { max-width: 330px; font-size: 13px; }
-  .gateway-copy .hero-actions { justify-content: center; margin-top: 20px; }
-  .gateway-copy .hero-chapter { display: none; }
-  .gateway-visual { height: 38svh; max-height: 350px; min-height: 180px; }
-  .gateway-visual .portal-scene { min-height: 0; }
-  .gateway-visual .portal-door { width: min(47%, 180px); height: 82%; bottom: 5%; }
-  .gateway-visual .portal-floor-light { bottom: -12%; }
-  .is-enhanced .world-geometry { width: 140vw; }
-  .is-enhanced .cinema-chapter { top: auto; bottom: 90px; left: 8%; right: 8%; width: auto; transform: none; padding: 0; }
-  .is-enhanced .cinema-chapter:before { inset: -45px -25px -50px; background: linear-gradient(transparent, #080b14ec 20%, #080b14f5 90%); }
-  .is-enhanced .cinema-chapter h2 { font-size: clamp(28px, 7vw, 38px); margin: 10px 0 14px; max-width: 380px; }
-  .is-enhanced .cinema-chapter .cinema-lead { font-size: 14px; line-height: 1.65; }
-  .is-enhanced .cinema-chapter p { font-size: 12px; line-height: 1.65; }
-  .is-enhanced .cinema-chapter .tags { margin-top: 12px; gap: 5px; }
-  .is-enhanced .cinema-chapter .tags span { font-size: 9px; padding: 4px 8px; }
-  .is-enhanced .cinema-hud { bottom: 24px; left: 7%; right: 7%; }
-  .cinema-hud>span:not(.hud-mark) { display: none; }
-  .is-enhanced .world-ending { bottom: 12%; }
-  .is-enhanced .scene-vignette { box-shadow: inset 0 0 55px 10px #06091277; }
-  .is-enhanced .foreground-boughs { opacity: .65; }
-}
-@media (max-height: 650px) and (min-width: 700px) {
-  .is-enhanced .cinema-chapter h2 { font-size: 32px; }
-  .is-enhanced .cinema-chapter p { font-size: 12px; }
-  .is-enhanced .cinema-chapter .cinema-lead { font-size: 14px; }
-  .gateway-visual { height: 90svh; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .cinematic .world-camera { height: 90svh; }
-  .cinematic .world-geometry { width: min(60vh, 85vw); }
-  .cinematic .cinema-chapter { border-top: 1px solid #c4b5fd26; }
-}
-/* Keep the no-JavaScript and reduced-motion document in narrative order. */
-.cinema-frame { display: flex; flex-direction: column; }
-.gateway-scene { order: 0; }
-.world-camera { order: 1; }
-.cinema-captions { order: 2; }
-.world-ending { order: 3; }
-.is-enhanced .cinema-frame { display: block; }
-.cinematic:not(.is-enhanced) .world-geometry { width: min(50vh, 84vw); }
