@@ -1,8 +1,123 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import {notFound} from 'next/navigation';
-import {projects} from '@/data/projects';
-import Navigation from '@/components/navigation/Navigation';
-export function generateStaticParams(){return projects.map(p=>({slug:p.slug}));}
-export async function generateMetadata({params}:{params:Promise<{slug:string}>}):Promise<Metadata>{const {slug}=await params;const p=projects.find(p=>p.slug===slug);return {title:p?`${p.name} — Razan`:'Project not found'};}
-export default async function CaseStudy({params}:{params:Promise<{slug:string}>}){const {slug}=await params;const p=projects.find(p=>p.slug===slug);if(!p)notFound();const next=projects[(projects.indexOf(p)+1)%projects.length];return <><Navigation/><main id="main" className="case-study section-shell"><Link className="text-link" href="/#projects">← Back to projects</Link><header className="case-header"><p className="eyebrow">{p.category}</p><h1>{p.name}<span>.</span></h1><p className="large-copy">{p.summary}</p><div className="tags">{p.stack.map(s=><span key={s}>{s}</span>)}</div></header><div className={`case-art project-art project-${p.slug}`} aria-label="Decorative project artwork, not an application screenshot"><span className="project-emblem">{p.name==='WasteWise'?'◎':p.name==='TasmeemHub'?'✳':'⌁'}</span><span className="art-caption">{p.name.toUpperCase()} / {p.pending?'DETAILS FORTHCOMING':'PROJECT NOTES'}</span></div><div className="case-body"><aside><p className="eyebrow">PROJECT CONTEXT</p><p>{p.context}</p>{p.repository&&<a className="text-link" href={p.repository}>Repository ↗</a>}{p.demo&&<a className="text-link" href={p.demo}>Live demo ↗</a>}</aside><div><section><h2>{p.pending?'The story is on its way.':'Overview'}</h2><p>{p.pending?'This project has its own place in the portfolio. Its description, technical approach, and individual contributions are awaiting verified information.':p.summary}</p></section>{p.features.length>0&&<section><h2>Confirmed functionality</h2><ul>{p.features.map(f=><li key={f}>{f}</li>)}</ul></section>}{p.contribution&&<section><h2>My contribution</h2><p>{p.contribution}</p></section>}<section className="case-pending"><p className="eyebrow">DOCUMENTATION STATUS</p><p>{p.pending?'Full case study pending project details.':'These notes contain the currently verified project information.'} Screenshots, architecture, technical challenges, {p.contribution?'':'individual contributions, '}and results will be added when documented. Repository and demo links are not yet provided.</p></section></div></div><Link className="next-project" href={`/projects/${next.slug}`}><span className="eyebrow">NEXT PROJECT</span><strong>{next.name} ↗</strong></Link></main></>}
+import { notFound } from 'next/navigation';
+import { projects } from '@/data/projects';
+import { cases } from '@/data/cases';
+import SiteNav from '@/components/portfolio/SiteNav';
+import Gallery from '@/components/portfolio/Gallery';
+import Ornament from '@/components/portfolio/Ornament';
+import { SoftLink } from '@/components/portfolio/Links';
+import Ambient from '@/components/portfolio/Ambient';
+import Reveal from '@/components/portfolio/Reveal';
+
+export function generateStaticParams() {
+  return projects.map((p) => ({ slug: p.slug }));
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const p = projects.find((x) => x.slug === slug);
+  return p ? { title: `${p.name} | Razan`, description: p.summary } : { title: 'Project not found' };
+}
+
+export default async function CaseStudy({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const i = projects.findIndex((x) => x.slug === slug);
+  const c = cases[slug];
+  if (i < 0 || !c) notFound();
+  const p = projects[i];
+  const next = projects[(i + 1) % projects.length];
+  return (
+    <main id="main" className="pf case" data-theme={p.slug}>
+      <Ambient />
+      <Reveal />
+      <SiteNav />
+      <Ornament slug={p.slug} />
+      <Link className="case-back" href="/#work">← Back to projects</Link>
+      <header className="case-head">
+        <p className="pj-cat">{p.category}</p>
+        <h1>{p.name}</h1>
+        <p className="case-lead">{c.tagline} {p.summary}</p>
+      </header>
+      <Gallery shots={p.shots} video={p.video} name={p.name} />
+
+      <div className="glance rv">
+        {c.glance.map((g) => <div key={g.label}><small>{g.label}</small><b>{g.value}</b></div>)}
+      </div>
+
+      <section className="cs rv">
+        <div className="trio">
+          <div><h3>Overview</h3><p>{c.overview}</p></div>
+          <div><h3>The problem</h3><p>{c.problem}</p></div>
+          <div><h3>The approach</h3><p>{c.approach}</p></div>
+        </div>
+      </section>
+
+      <section className="cs rv">
+        <p className="cs-k">How it works</p>
+        <h2>{c.flowTitle}</h2>
+        <ol className="flow">{c.flow.map((s) => <li key={s}>{s}</li>)}</ol>
+      </section>
+
+      <section className="cs rv">
+        <p className="cs-k">Features</p>
+        <h2>{c.featuresTitle}</h2>
+        <div className="groups">
+          {c.features.map((g) => (
+            <div key={g.title}><h3>{g.title}</h3><ul>{g.items.map((x) => <li key={x}>{x}</li>)}</ul></div>
+          ))}
+        </div>
+      </section>
+
+      {c.deep && c.deepTitle && (
+        <section className="cs rv">
+          <p className="cs-k">Under the hood</p>
+          <h2>{c.deepTitle}</h2>
+          <div className="deep">{c.deep.map((d) => <div key={d.title}><h3>{d.title}</h3><p>{d.text}</p></div>)}</div>
+        </section>
+      )}
+
+      {c.result && (
+        <section className="cs rv">
+          <div className="result">
+            <div><b>{c.result.value}</b><small>{c.result.label}</small></div>
+            <p>{c.result.text}{c.result.note && <><br /><strong>{c.result.note}</strong></>}</p>
+          </div>
+        </section>
+      )}
+
+      <section className="cs rv">
+        <div className="minebox">
+          <p className="cs-k">My contribution</p>
+          <h2>{c.mineTitle}</h2>
+          <p className="lead">{c.mineLead}</p>
+          <div className="mine">{c.mine.map((m) => <div key={m.title}><h3>{m.title}</h3><p>{m.text}</p></div>)}</div>
+          {c.notMine && <p className="notmine">{c.notMine}</p>}
+        </div>
+      </section>
+
+      <section className="cs rv">
+        <p className="cs-k">Challenges</p>
+        <h2>What was hard</h2>
+        <div className="chal">{c.challenges.map((x) => <div key={x.title}><h3>{x.title}</h3><p>{x.text}</p></div>)}</div>
+      </section>
+
+      <section className="cs rv">
+        <p className="cs-k">Takeaway</p>
+        <h2>What I took from it</h2>
+        <p className="learn">{c.learned}</p>
+      </section>
+
+      <section className="cs rv">
+        <h2>Built with</h2>
+        <div className="chips">{p.stack.map((s) => <span key={s}>{s}</span>)}</div>
+        <div className="pj-links" style={{ marginTop: 22 }}>
+          <SoftLink href={p.repository}>GitHub</SoftLink>
+          <SoftLink href={p.demo}>Live site</SoftLink>
+        </div>
+      </section>
+
+      <Link className="case-next" href={`/projects/${next.slug}`}>Next project: <strong>{next.name} →</strong></Link>
+    </main>
+  );
+}

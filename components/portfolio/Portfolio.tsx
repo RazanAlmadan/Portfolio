@@ -1,5 +1,103 @@
+import type { CSSProperties } from 'react';
 import Link from 'next/link';
-import {projects, type Project} from '@/data/projects';
-import {profile,skillGroups} from '@/data/profile';
-export function ProjectCard({project:p,index}:{project:Project;index:number}){return <Link href={`/projects/${p.slug}`} className={`project-card project-${p.slug}`}><div className="project-art" aria-hidden="true"><span className="project-number">0{index+1}</span><div className="project-emblem">{p.name==='WasteWise'?'◎':p.name==='TasmeemHub'?'✳':p.name==='Sahl Darbak'?'⌁':p.name.slice(0,1)}</div><span className="art-caption">{p.pending?'STORY TO COME':'A PROJECT BY RAZAN'}</span></div><div className="project-copy"><p className="eyebrow">{p.category}</p><h3>{p.name}<span aria-hidden="true">↗</span></h3><p>{p.summary}</p><div className="tags">{p.stack.map(s=><span key={s}>{s}</span>)}</div><span className="text-link">{p.pending?'View project status':'Explore case study'} →</span></div></Link>}
-export default function Portfolio(){return <div className="portfolio-sections"><section id="projects" className="section-shell"><div className="section-heading"><div><p className="eyebrow">THE WORK / SELECTED PROJECTS</p><h2>Ideas, brought to life<span>.</span></h2></div><p>A closer look at the systems,<br/>experiences, and ideas I build.</p></div><div className="featured-grid">{projects.filter(p=>p.featured).map((p,i)=><ProjectCard key={p.slug} project={p} index={i}/>)}</div><div className="all-projects"><h3>All projects <span> / 05</span></h3>{projects.map((p,i)=><Link key={p.slug} href={`/projects/${p.slug}`}><span className="muted">0{i+1}</span><strong>{p.name}</strong><span>{p.pending?'Details forthcoming':p.category}</span><span aria-hidden="true">↗</span></Link>)}</div></section><section id="about" className="section-shell about-section"><div><p className="eyebrow">THE PERSON BEHIND THE CODE</p><h2>Curious mind.<br/>Thoughtful builder.</h2><div className="about-monogram" aria-hidden="true">R<span>✦</span></div></div><div className="about-copy"><p className="large-copy">I’m Razan, a Computer Science graduate and Full Stack Developer drawn to the intersection of software, intelligence, and creativity.</p><p>My foundation is Java and Spring Boot. I work with backend systems, full-stack applications, and AI integrations to connect technical ideas with practical experiences.</p><p>From creative services and travel planning to computer vision, my projects reflect a curiosity about what thoughtful software can make possible.</p><a className="text-link" href="#contact">Let’s connect ↗</a></div></section><section id="skills" className="section-shell"><p className="eyebrow">MY TOOLKIT</p><h2>The craft behind the work.</h2><div className="skills-grid">{skillGroups.map((g,i)=><article key={g.name}><span className="muted">0{i+1} /</span><h3>{g.name}</h3>{g.items.map(s=><p key={s}>{s}</p>)}</article>)}</div></section><section className="section-shell background-grid"><div id="education"><p className="eyebrow">FOUNDATIONS</p><h2>Education.</h2><h3>Computer Science graduate</h3><p>Graduation project: WasteWise — waste detection and classification using YOLOv8.</p><p className="content-note">Institution and graduation year to be added.</p></div><div id="experience"><p className="eyebrow">LEARNING THROUGH BUILDING</p><h2>Experience.</h2><h3>Tuwaiq Academy · Team project</h3><p>Sahl Darbak: AI integrations and external API functionality for travel recommendations, packing assistance, and transportation-related features.</p><h3>Hackathon participation</h3><p>Mergab · Project details and event information forthcoming.</p></div></section><section id="resume" className="section-shell resume-section"><div><p className="eyebrow">A MORE CONCISE INTRODUCTION</p><h2>My resume.</h2></div>{profile.resumeUrl?<a className="button" href={profile.resumeUrl}>View resume ↗</a>:<p className="content-note">The resume will be available here once added.</p>}</section><section id="contact" className="section-shell contact-section"><p className="eyebrow">BEYOND THIS WORLD</p><h2>Let’s build<br/>something meaningful<span>.</span></h2><p>For conversations about software, ideas, and collaboration.</p><div className="contact-links">{profile.email&&<a className="button" href={`mailto:${profile.email}`}>Say hello ↗</a>}{profile.githubUrl&&<a href={profile.githubUrl}>GitHub ↗</a>}{profile.linkedinUrl&&<a href={profile.linkedinUrl}>LinkedIn ↗</a>}{!profile.email&&!profile.githubUrl&&!profile.linkedinUrl&&<p className="content-note">Contact links will be added soon.</p>}</div></section><footer className="site-footer"><Link href="/">Razan · Enter My World</Link><p>Built with curiosity. Still growing.</p><a href="#main">Back to top ↑</a></footer></div>}
+import { projects, type Project } from '@/data/projects';
+import { profile, about, experience, skills } from '@/data/profile';
+import SiteNav from './SiteNav';
+import Media from './Media';
+import Ambient from './Ambient';
+import Reveal from './Reveal';
+import { SoftLink } from './Links';
+
+function ProjectCard({ p, featured, delay, order }: { p: Project; featured?: boolean; delay: number; order: number }) {
+  const style = { '--d': `${delay}ms`, '--ac': p.orb[1] } as CSSProperties;
+  return (
+    <article className={`pj rv${featured ? ' feat' : ''}`} style={style}>
+      <Media project={p} order={order} />
+      <div className="pj-body">
+        <p className="pj-cat">{p.category}</p>
+        <h4><Link href={`/projects/${p.slug}`}>{p.name}</Link></h4>
+        <p>{p.summary}</p>
+        {p.stat && <p className="pj-stat"><b>{p.stat.value}</b> {p.stat.label}</p>}
+        <ul>{p.highlights.map((h) => <li key={h}>{h}</li>)}</ul>
+        <p className="pj-role"><b>My work:</b> {p.role}</p>
+        <div className="chips">{p.stack.map((s) => <span key={s}>{s}</span>)}</div>
+        <div className="pj-links">
+          <SoftLink href={p.repository}>GitHub</SoftLink>
+          <SoftLink href={p.demo}>Live site</SoftLink>
+          <Link href={`/projects/${p.slug}`}>Details →</Link>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+export default function Portfolio() {
+  const [first, ...rest] = projects;
+  return (
+    <div className="pf" id="projects">
+      <Ambient />
+      <Reveal />
+      <SiteNav />
+
+      <section className="pf-hero">
+        <p className="eyebrow rv">{profile.role} · {profile.location}</p>
+        <h2 className="rv" style={{ '--d': '80ms' } as CSSProperties}>I build software that turns meaningful ideas into real experiences.</h2>
+        <p className="rv" style={{ '--d': '160ms' } as CSSProperties}>{profile.intro}</p>
+      </section>
+
+      <section className="pf-sec" id="work">
+        <h3 className="pf-h rv">Selected work</h3>
+        <ProjectCard p={first} featured delay={0} order={0} />
+        <div className="pf-grid">
+          {rest.map((p, i) => <ProjectCard key={p.slug} p={p} delay={(i % 2) * 120} order={i + 1} />)}
+        </div>
+      </section>
+
+      <section className="pf-sec about" id="about">
+        <div className="about-copy rv">
+          <p className="eyebrow">About me</p>
+          <h3 className="pf-h">{about.title}</h3>
+          {about.paragraphs.map((t) => <p key={t}>{t}</p>)}
+        </div>
+        <dl className="about-facts rv" style={{ '--d': '140ms' } as CSSProperties}>
+          {about.facts.map((f) => <div key={f.k}><dt>{f.k}</dt><dd>{f.v}</dd></div>)}
+        </dl>
+      </section>
+
+      <section className="pf-sec" id="path">
+        <h3 className="pf-h rv">Experience &amp; education</h3>
+        <ol className="tl">
+          {experience.map((x, i) => (
+            <li key={x.title} className="rv" style={{ '--d': `${i * 80}ms` } as CSSProperties}><b>{x.title}</b><span>{x.meta}</span><p>{x.text}</p></li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="pf-sec" id="skills">
+        <h3 className="pf-h rv">Skills &amp; tools</h3>
+        <div className="sk">
+          {skills.map((g, gi) => (
+            <div key={g.group} className="rv" style={{ '--d': `${(gi % 2) * 100}ms` } as CSSProperties}>
+              <b>{g.group}</b>
+              <div className="chips">
+                {g.items.map((i) => <span key={i.label} {...(i.logo ? { 'data-logo': i.logo } : {})}>{i.label}</span>)}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="pf-sec pf-contact rv" id="contact">
+        <h3 className="pf-h">Let&apos;s build something meaningful</h3>
+        <p>Open to professional opportunities and to building real products.</p>
+        <div className="pj-links big">
+          <Link href="/contact">Send a message</Link>
+          <SoftLink href={profile.githubUrl}>GitHub</SoftLink>
+          <SoftLink href={profile.linkedinUrl}>LinkedIn</SoftLink>
+        </div>
+      </section>
+
+      <footer className="pf-foot">© {profile.name} · Every branch tells a story. And mine is still growing.</footer>
+    </div>
+  );
+}

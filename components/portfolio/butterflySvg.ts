@@ -1,0 +1,29 @@
+// Same butterfly as the journey (unique gradient ids so both can live on one page).
+export const BUTTERFLY_SVG = `<svg viewBox="0 0 120 108" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="cw1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#e5fcff" stop-opacity=".95"/>
+            <stop offset=".45" stop-color="#9fc8fa" stop-opacity=".65"/>
+            <stop offset="1" stop-color="#d5a7ff" stop-opacity=".88"/>
+          </linearGradient>
+          <linearGradient id="cw2" x1="0" y1="0" x2=".8" y2="1">
+            <stop offset="0" stop-color="#eaf8ff" stop-opacity=".88"/>
+            <stop offset="1" stop-color="#bd9bea" stop-opacity=".73"/>
+          </linearGradient>
+        </defs>
+        <g class="wing-l">
+          <path d="M59 50 C42 18 17 0 8 14 C-2 37 19 56 58 56 Z" fill="url(#cw1)" stroke="#e7faff" stroke-width="1.4"/>
+          <path d="M58 57 C38 52 21 61 25 76 C31 87 42 82 38 98 C52 91 60 76 60 60 Z" fill="url(#cw2)" stroke="#e9e0ff" stroke-width="1.2"/>
+          <path d="M56 52 Q39 27 12 18 M53 54 Q35 42 17 40 M56 58 Q38 65 31 76 M54 63 Q48 78 39 88" fill="none" stroke="#f1ffff" stroke-width=".9" opacity=".72"/>
+          <path d="M14 16 Q28 15 39 27 M16 40 Q24 51 38 52" fill="none" stroke="#f1d7ff" stroke-width="1.1" opacity=".7"/>
+        </g>
+        <g class="wing-r">
+          <path d="M61 50 C78 18 103 0 112 14 C122 37 101 56 62 56 Z" fill="url(#cw1)" stroke="#e7faff" stroke-width="1.4"/>
+          <path d="M62 57 C82 52 99 61 95 76 C89 87 78 82 82 98 C68 91 60 76 60 60 Z" fill="url(#cw2)" stroke="#e9e0ff" stroke-width="1.2"/>
+          <path d="M64 52 Q81 27 108 18 M67 54 Q85 42 103 40 M64 58 Q82 65 89 76 M66 63 Q72 78 81 88" fill="none" stroke="#f1ffff" stroke-width=".9" opacity=".72"/>
+          <path d="M106 16 Q92 15 81 27 M104 40 Q96 51 82 52" fill="none" stroke="#f1d7ff" stroke-width="1.1" opacity=".7"/>
+        </g>
+        <path d="M59.5 34 Q55 51 59.5 76 Q64 51 60.5 34Z" fill="#f3fcff"/>
+        <circle cx="60" cy="34" r="3.5" fill="#fff"/>
+        <path d="M59 33 Q47 17 45 19 M61 33 Q73 17 75 19" fill="none" stroke="#e7faff" stroke-linecap="round" stroke-width="1.2"/>
+      </svg>`;

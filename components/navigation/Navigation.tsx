@@ -1,3 +1,0 @@
-import Link from 'next/link';
-import { profile } from '@/data/profile';
-export default function Navigation(){return <><a className="skip-link" href="#main">Skip to content</a><header className="site-header"><Link className="wordmark" href="/">r<span>.</span><span className="wordmark-caption">RAZAN / DEVELOPER</span></Link><nav aria-label="Main navigation"><Link href="/#about">About</Link><Link href="/#projects">Projects</Link><Link href="/#skills">Skills</Link><Link href="/#contact">Contact</Link><Link className="nav-resume" href={profile.resumeUrl || '/#resume'}>Resume <span aria-hidden="true">↗</span></Link></nav></header></>}
