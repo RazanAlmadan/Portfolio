@@ -1,5 +1,5 @@
-// @ts-nocheck
 /* eslint-disable */
+// @ts-nocheck
 /**
  * Enter My World: the cinematic journey engine (Three.js).
  * It drives the DOM rendered by <JourneyScene/> and returns a cleanup function,

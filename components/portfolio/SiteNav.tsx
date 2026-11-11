@@ -75,6 +75,7 @@ export default function SiteNav() {
         ))}
         <Link className="pf-cta" href="/contact" onClick={close}>Contact</Link>
         {/* On the home page the journey engine turns this into "scroll to top"; elsewhere it is a normal link. */}
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
         <a href="/" id="replay" onClick={close}>Replay the journey ↑</a>
       </nav>
     </header>
