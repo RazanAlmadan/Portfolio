@@ -32,7 +32,7 @@ export const cases: Record<string, CaseStudy> = {
       },
       {
         label: "My focus",
-        value: "Creativity domain, frontend, AI assistant"
+        value: "Creativity domain (tools and AI), full frontend"
       },
       {
         label: "Domains",
@@ -92,7 +92,7 @@ export const cases: Record<string, CaseStudy> = {
       }
     ],
     mineTitle: "What I built",
-    mineLead: "The Creativity domain on the frontend, the platform-wide interface, and the AI assistant experience.",
+    mineLead: "The whole Creativity domain, every tool in it and the AI behind them, plus the complete frontend of the platform.",
     mine: [
       {
         title: "Story maps",
@@ -119,15 +119,15 @@ export const cases: Record<string, CaseStudy> = {
         text: "Real books from Open Library with AI recommendations that explain how each one relates to the story."
       },
       {
-        title: "Platform frontend",
-        text: "Landing page, login, dashboards, the shared canvas, the SANA AI assistant panel with proposal review, and the visual identity: deep teal, cream and gold."
+        title: "Whole platform frontend",
+        text: "The complete frontend: landing page, login, dashboards, the shared canvas, the SANA AI assistant panel with proposal review, and the visual identity of deep teal, cream and gold."
       },
       {
         title: "AI assistant and prompts",
-        text: "Wrote and refined the Creative Director prompts inside the team's n8n workflows, and built the interface side of AI requests: status checks, proposal preview, and accept or reject."
+        text: "Wrote and refined the Creative Director prompts inside the team's n8n workflows for every creative tool, and built the interface side of AI requests: status checks, proposal preview, and accept or reject."
       }
     ],
-    notMine: "SANA is a team project. Backend logic for the other domains, billing and deployment are team work, and the n8n workflows are shared with the team.",
+    notMine: "SANA is a team project. The backend logic of the other domains, billing and deployment are team work, and the n8n workflows are shared with the team.",
     challenges: [
       {
         title: "Making dense graphs readable",

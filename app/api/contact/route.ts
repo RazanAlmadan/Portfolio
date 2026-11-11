@@ -21,7 +21,23 @@ const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 const oneLine = (s: string) => s.replace(/[\r\n]+/g, ' ').trim();
 const json = (body: unknown, status = 200) => Response.json(body, { status });
 
+// Overall cap per server instance (protects the free Resend quota from floods): 40 messages per hour.
+let hourStart = Date.now(), hourCount = 0;
+function floodLimited() {
+  const now = Date.now();
+  if (now - hourStart > 3_600_000) { hourStart = now; hourCount = 0; }
+  return ++hourCount > 40;
+}
+
 export async function POST(req: Request) {
+  // Only accept requests that come from this site's own pages.
+  const origin = req.headers.get('origin'), host = req.headers.get('host');
+  if (origin && host) {
+    let ok = false;
+    try { ok = new URL(origin).host === host; } catch { /* malformed origin */ }
+    if (!ok) return json({ ok: false, error: 'forbidden' }, 403);
+  }
+
   let data: Record<string, unknown>;
   try { data = await req.json(); } catch { return json({ ok: false, error: 'invalid' }, 400); }
 
@@ -36,7 +52,7 @@ export async function POST(req: Request) {
   }
 
   const ip = (req.headers.get('x-forwarded-for') ?? 'unknown').split(',')[0].trim();
-  if (limited(ip)) return json({ ok: false, error: 'rate' }, 429);
+  if (limited(ip) || floodLimited()) return json({ ok: false, error: 'rate' }, 429);
 
   const key = process.env.RESEND_API_KEY;
   const to = process.env.CONTACT_TO_EMAIL || profile.email;

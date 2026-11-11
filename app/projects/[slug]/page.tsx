@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { projects } from '@/data/projects';
@@ -20,13 +21,23 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return p ? { title: `${p.name} | Razan`, description: p.summary } : { title: 'Project not found' };
 }
 
-export default async function CaseStudy({ params }: { params: Promise<{ slug: string }> }) {
+// `params` is request data: reading it must happen inside <Suspense> so navigation can show the page shell instantly.
+export default function CaseStudy({ params }: { params: Promise<{ slug: string }> }) {
+  return (
+    <Suspense fallback={<main id="main" className="pf case" aria-busy="true"><SiteNav /></main>}>
+      <CaseStudyBody params={params} />
+    </Suspense>
+  );
+}
+
+async function CaseStudyBody({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const i = projects.findIndex((x) => x.slug === slug);
   const c = cases[slug];
   if (i < 0 || !c) notFound();
   const p = projects[i];
   const next = projects[(i + 1) % projects.length];
+  const prev = projects[(i - 1 + projects.length) % projects.length];
   return (
     <main id="main" className="pf case" data-theme={p.slug}>
       <Ambient />
@@ -117,7 +128,11 @@ export default async function CaseStudy({ params }: { params: Promise<{ slug: st
         </div>
       </section>
 
-      <Link className="case-next" href={`/projects/${next.slug}`}>Next project: <strong>{next.name} →</strong></Link>
+      <nav className="case-pager" aria-label="Project navigation">
+        <Link className="cp-prev" href={`/projects/${prev.slug}`} rel="prev"><small>← Previous project</small><strong>{prev.name}</strong></Link>
+        <Link className="cp-all" href="/#work">All projects</Link>
+        <Link className="cp-next" href={`/projects/${next.slug}`} rel="next"><small>Next project →</small><strong>{next.name}</strong></Link>
+      </nav>
     </main>
   );
 }

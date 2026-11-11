@@ -111,7 +111,7 @@ function layout() {
   FW = frame.clientWidth; FH = frame.clientHeight; narrow = FW < 800;
   fxCanvas.width = FW; fxCanvas.height = FH; fx2c.width = FW; fx2c.height = FH;
   glowCanvas.width = Math.max(2, FW >> 3); glowCanvas.height = Math.max(2, FH >> 3);
-  if (renderer) { maxDpr = Math.min(devicePixelRatio || 1, narrow ? (lite ? .85 : 1) : 1.25); curDpr = Math.min(curDpr || maxDpr, maxDpr); renderer.setPixelRatio(curDpr); renderer.setSize(FW, FH, false); camera.aspect = FW / FH; camera.updateProjectionMatrix(); }
+  if (renderer) { maxDpr = Math.min(devicePixelRatio || 1, narrow ? (lite ? .85 : 1.5) : 1.25); curDpr = Math.min(curDpr || maxDpr, maxDpr); renderer.setPixelRatio(curDpr); renderer.setSize(FW, FH, false); camera.aspect = FW / FH; camera.updateProjectionMatrix(); }
 }
 listen(window, 'resize', layout);
 layout();
@@ -405,8 +405,8 @@ for (let i = 0; i < 7; i++) {
   K(STOP_P[i] - .02, S(i), [o[0], o[1], o[2]], o[3], fy, 1.3, .27);
   K(STOP_P[i] + .02, S(i), [o[0], o[1], o[2]], o[3], fy, 1.3, .27);
 }
-K(.965, CW, [0, 2.6, 47], .5, .40, 1.8, .40);
-K(1, CW, [0, 2.6, 47], .5, .40, 1.8, .40);
+K(.965, CW, [0, 2.6, 47], .5, .40, 1.4, .40);
+K(1, CW, [0, 2.6, 47], .5, .40, 1.4, .40);
 const lookV = new V3(), posV = new V3(), rightV = new V3(), upV = new V3(), dirV = new V3();
 function camAt(p) {
   let k = 0; while (k < KEYS.length - 2 && p > KEYS[k + 1].p) k++;
@@ -512,11 +512,17 @@ function drawFx2(p, pos, scale, mode, bw, dt) {
   }
   fx2.globalAlpha = 1;
   /* ---- logo dust: gathers around the butterfly in a tidy grid, then flies into its chip ---- */
-  const sc = narrow ? .78 : 1.15, cols = n => narrow ? 3 : (n > 6 ? 4 : 3), cw = narrow ? 100 : 128, ch = narrow ? 70 : 100;
+  const sc = narrow ? .62 : 1.15, cols = n => narrow ? 4 : (n > 6 ? 4 : 3), cw = narrow ? Math.min(88, (FW - 24) / 4) : 128, ch = narrow ? 62 : 100;
   for (const it of DUST_ITEMS) {
     if (p < it.g0 || p > it.f0 + FDUR || !it.rect) continue;
     const C = cols(it.n), R = Math.ceil(it.n / C), col = it.idx % C, row = Math.floor(it.idx / C);
-    const fit = Math.min(1, (cw * .86) / Math.max(1, it.pts.w * sc)), gx = clamp(pos[0] + (col - (C - 1) / 2) * cw, 60, FW - 60), gy = clamp(pos[1] - 96 - (R - 1 - row) * ch, 50, FH - 80);
+    const inRow = row < R - 1 ? C : it.n - (R - 1) * C, colOff = narrow ? col - (inRow - 1) / 2 : col - (C - 1) / 2;
+    const fit = Math.min(1, (cw * .86) / Math.max(1, it.pts.w * sc));
+    // Phones: a tidy block at the top of the screen (rows never collapse onto each other); desktop: above the butterfly.
+    const gx = narrow ? FW / 2 + colOff * cw : clamp(pos[0] + colOff * cw, 60, FW - 60);
+    const roomAbove = pos[1] - 56 - R * ch - 56, wBelow = 1 - smooth(-20, 20, roomAbove);
+    const topAbove = clamp(pos[1] - 56 - R * ch, 56, FH * .45), topBelow = clamp(pos[1] + 62, 56, FH * .58 - R * ch);
+    const gy = narrow ? lerp(topAbove, topBelow, wBelow) + row * ch : clamp(pos[1] - 96 - (R - 1 - row) * ch, 50, FH - 80);
     const rc = it.rect, gq = clamp((p - it.g0) / GDUR), fq = clamp((p - it.f0) / FDUR);
     const rgbA = [205, 220, 255], rgbB = [225, 208, 255];
     const draw = (cnt, fill, size) => {
@@ -548,11 +554,11 @@ let psm = null, lastNow = performance.now(), lastRenderP = -1, lastPR = portal.g
 
 /* ================= Project stars ================= */
 const PROJ = [
- { n:'SANA', c:'AI-Powered Creative Workspace · Full-Stack · Team Project', d:[['Summary','A planning workspace that turns scattered creative ideas into connected, structured project blueprints.'],['My work','Frontend and product integration, the AI assistant experience, and Creative Director prompt design within the Creativity domain. This was a team project.']], xy:[[74,7],[90,40]], pl:['#c8fbff','#3cc4dc','#124a63','#6fe0f088',12,'']  },
- { n:'Mergab', c:'Simulation · Expo Hackathon · Team Project', d:[['Summary','A crowd-management platform for exhibitions that simulates visitor movement and identifies congestion.'],['My work','The Java and Spring Boot side of the system, including the event-driven crowd simulation. The AI prediction service was built by a teammate.']], xy:[[90,52],[10,52]], pl:['#dac8ff','#8d63e0','#2f1a63','#a47df088',16,'moon']  },
- { n:'Sahl Darbak', c:'AI Travel Planning · Capstone 3 · Team Project', d:[['Summary','A travel planning platform that combines AI recommendations with real-world data.'],['My work','The Discover area: AI destination recommendations and country comparison, weather and holiday data, packing list, transportation, and the travel community with AI moderation. This was a team project.']], xy:[[25,12],[30,8]], pl:['#ffd9a8','#e8883a','#6a2f12','#f0a05a88',15,'']  },
- { n:'TasmeemHub', c:'Full-Stack · AI Integration · Capstone 2 · Solo Project', d:[['Summary','A platform connecting clients with designers, from the first request to the final delivery.'],['My work','Backend business logic, APIs, workflows, frontend development, and AI-related features.']], xy:[[86,20],[80,12]], pl:['#ffd3ef','#d86bb0','#5a1f52','#e17bc088',17,'ring']  },
- { n:'WasteWise', c:'Computer Vision · Graduation Project', d:[['Summary','A real-time waste detection and classification system powered by YOLOv8, covering plastic, metal, and trash.'],['My work','Dataset preparation, YOLOv8s training and fine-tuning, and evaluation. The Android app was built by teammates.']], stat:'92.19% mAP@50 on the project\'s evaluation', xy:[[16,30],[12,30]], pl:['#9ff0d8','#2fa58f','#0e3f40','#47d1b588',13,'']  }
+ { n:'SANA', s:'sana', c:'AI-Powered Creative Workspace · Full-Stack · Team Project', d:[['What it is',"A creative workspace where ideas become structured plans, with an AI assistant that suggests and the user approves."],['What I built',"The whole Creativity domain with its AI, from story maps and dialogue trees to characters and moodboards, plus the complete frontend."],['Highlight',"AI never changes a project without the user's approval."]], xy:[[74,7],[90,40]], pl:['#c8fbff','#3cc4dc','#124a63','#6fe0f088',12,'']  },
+ { n:'Mergab', s:'mergab', c:'Simulation · Expo Hackathon · Team Project', d:[['What it is',"A smart system for Expo visitors that simulates crowds minute by minute and predicts where congestion will happen."],['What I built',"The Java and Spring Boot simulation: how visitors move between zones, and how events and prayer times change the flow."],['Highlight',"Models real crowd behavior, including prayer-time flow and scheduled events."]], xy:[[90,52],[10,52]], pl:['#dac8ff','#8d63e0','#2f1a63','#a47df088',16,'moon']  },
+ { n:'Sahl Darbak', s:'sahl-darbak', c:'AI Travel Planning · Capstone 3 · Team Project', d:[['What it is',"An AI-powered travel platform for discovering destinations, planning full trips, and connecting with other travelers."],['What I built',"The Discover area: AI destination picks, country comparison, packing list, transport and the travel community."],['Highlight',"Recommendations use real weather and holiday data."]], xy:[[25,12],[30,8]], pl:['#ffd9a8','#e8883a','#6a2f12','#f0a05a88',15,'']  },
+ { n:'TasmeemHub', s:'tasmeemhub', c:'Full-Stack · AI Integration · Capstone 2 · Solo Project', d:[['What it is',"A marketplace that connects clients with designers, from the first request to the final delivery."],['What I built',"Everything, solo: backend, APIs, workflows, frontend and the AI features."],['Highlight',"AI-assisted proposals and designer matching."]], xy:[[86,20],[80,12]], pl:['#ffd3ef','#d86bb0','#5a1f52','#e17bc088',17,'ring']  },
+ { n:'WasteWise', s:'wastewise', c:'Computer Vision · Graduation Project', d:[['What it is',"A real-time waste detection system that recognizes plastic, metal and trash through the camera."],['What I built',"Dataset preparation, YOLOv8s training and fine-tuning, and evaluation."],['Highlight',"92.19% mAP@50 on the project's evaluation."]], xy:[[16,30],[12,30]], pl:['#9ff0d8','#2fa58f','#0e3f40','#47d1b588',13,'']  }
 ];
 const pEl = document.getElementById('pstars'), starLines = document.getElementById('starLines');
 const spanel = document.getElementById('spanel'); let lastStarBtn = null;
@@ -573,6 +579,7 @@ function openStar(i, btn) {
   const pr = PROJ[i]; lastStarBtn = btn;
   document.getElementById('spC').textContent = pr.c; document.getElementById('spT').textContent = pr.n;
   document.getElementById('spB').innerHTML = pr.d.map(x => '<p><b>' + x[0] + '</b>' + x[1] + '</p>').join('') + (pr.stat ? '<span class="stat">' + pr.stat + '</span>' : '');
+  const more = document.getElementById('spMore'); more.setAttribute('href', '/projects/' + pr.s);
   spanel.classList.add('open'); document.getElementById('spX').focus();
 }
 function closeStar() { spanel.classList.remove('open'); if (lastStarBtn) lastStarBtn.focus(); }
@@ -649,10 +656,10 @@ starBtns.forEach((b, i) => b.addEventListener('pointerenter', () => { if (matchM
 
 /* ---- companion mode: when the story ends the butterfly leaves the tree-top, circles the crown once, comes to the cursor,
         and from then on follows the visitor through the portfolio. It is the only butterfly on the page. ---- */
-let fol = 0, fpx = 0, fpy = 0, sv = 0, lastSY = 0, lastTree = null, orbitT = -1, orbitEnd = 0, ORB = null, perch = null, perchN = 0, heads = [];
+let glFilter = '', fol = 0, fpx = 0, fpy = 0, sv = 0, lastSY = 0, lastTree = null, orbitT = -1, orbitEnd = 0, ORB = null, perch = null, perchN = 0, heads = [];
 const ORB_DUR = 2.5;
 const followTarget = () => {
-  const m = narrow ? 40 : 56, now = performance.now();
+  const m = narrow ? 18 : 56, now = performance.now();
   let tx, ty;
   if (matchMedia('(hover:hover)').matches && lastMoveT > 0 && (now - lastMoveT < 2600 || now - orbitEnd < 2600)) { tx = mx * innerWidth + 70; ty = my * innerHeight + 46; }
   else {
@@ -661,10 +668,12 @@ const followTarget = () => {
       perch = null; let best = 1e9;
       for (const h of heads) { const r = h.getBoundingClientRect(); if (r.top > innerHeight * .18 && r.top < innerHeight * .48 && r.top < best) { best = r.top; perch = [clamp(r.left + Math.min(r.width, 720) + 46, 60, innerWidth - 60), r.top + Math.min(r.height * .25, 30)]; } }
     }
-    if (perch && !narrow) { tx = perch[0]; ty = perch[1]; } else { tx = narrow ? innerWidth - 40 : innerWidth * .82; ty = narrow ? innerHeight * .3 : innerHeight * .62; }
+    if (perch && !narrow) { tx = perch[0]; ty = perch[1]; } else { tx = narrow ? innerWidth - 20 : innerWidth * .82; ty = narrow ? innerHeight * .46 : innerHeight * .62; }
     if (!reduced) { tx += Math.sin(t * .9) * 24; ty += Math.cos(t * 1.3) * 15; }
+    // phones: no cursor, so the butterfly answers the scroll instead: it flutters inward and dips with the swipe, then settles on the edge
+    if (narrow && !reduced) { tx -= clamp(Math.abs(sv) * 1.6, 0, 46); ty += clamp(sv * 5, -80, 110) + Math.sin(scrollY * .006) * 34; }
   }
-  return [clamp(tx, m, innerWidth - m), clamp(ty + clamp(sv * 3, -30, 80), m, innerHeight - m)];
+  return [clamp(tx, m, innerWidth - m), clamp(ty + (narrow ? 0 : clamp(sv * 3, -30, 80)), m, innerHeight - m)];
 };
 /* where the crown is on screen, so the butterfly can circle it (call while the camera is placed) */
 const orbitSetup = () => {
@@ -692,7 +701,7 @@ function companionStep(dtS, treeScreen, folGoal, canOrbit) {
 function placeGuide(pos, scale) {
   if (lastX !== null) tilt += (clamp((pos[0] - lastX) * .6, -14, 14) - tilt) * .12;
   lastX = pos[0];
-  guide.style.transform = `translate3d(${pos[0].toFixed(1)}px,${pos[1].toFixed(1)}px,0) translate(-50%,-50%) rotate(${tilt.toFixed(1)}deg) scale(${(scale * (narrow ? .8 : 1)).toFixed(3)})`;
+  guide.style.transform = `translate3d(${pos[0].toFixed(1)}px,${pos[1].toFixed(1)}px,0) translate(-50%,-50%) rotate(${tilt.toFixed(1)}deg) scale(${(scale * (narrow ? lerp(.8, .5, fol) : 1)).toFixed(3)})`;
 }
 
 function loop() {
@@ -704,7 +713,7 @@ function loop() {
   if (scrollY > stage.offsetTop + stage.offsetHeight - 2) {
     SND.update(1, false);
     const ft = frame.getBoundingClientRect().top, ts = lastTree ? [lastTree[0], lastTree[1] + ft] : null;
-    guide.style.opacity = '1';
+    guide.style.opacity = narrow ? lerp(1, .55, fol).toFixed(2) : '1';
     const cp = companionStep(dtS, ts, 1, false); placeGuide(cp, lerp(lastTree ? lastTree[2] : .6, .6, fol));
     raf = requestAnimationFrame(loop); return;
   }
@@ -717,6 +726,10 @@ function loop() {
   world.style.setProperty('--world-opacity', smooth(.175, .255, p).toFixed(3));
   flashEl.style.setProperty('--flash', (smooth(.19, .213, p) * (1 - smooth(.213, .248, p)) * .5).toFixed(3));
   progressBar.style.setProperty('--journey', p.toFixed(4));
+  if (narrow) { // phones: the crown is small on screen, so give the final "everything lights up" a little extra punch
+    const eb = smooth(.86, .95, p), f = eb > .01 ? `brightness(${(1 + .32 * eb).toFixed(2)}) saturate(${(1 + .35 * eb).toFixed(2)})` : '';
+    if (f !== glFilter) { glFilter = f; glCanvas.style.filter = f; }
+  } else if (glFilter) { glFilter = ''; glCanvas.style.filter = ''; }
   ending.style.setProperty('--ending', smooth(.86, .92, p).toFixed(3)); updateStars(p); SND.update(p, scrollY < stage.offsetTop + stage.offsetHeight);
   gateway.style.pointerEvents = p < .2 ? 'auto' : 'none';
   mist.style.setProperty('--mist', (.45 + smooth(.88, .97, p) * .5).toFixed(3));
@@ -761,7 +774,7 @@ function loop() {
     else { pos = [w.s[0], w.s[1]]; scale = w.k; }
     pos = [pos[0] + Math.sin(t * 1.3) * 4, pos[1] + Math.cos(t * 1.1) * 3];
   }
-  const emS = (t < 3 && !reduced) ? .25 + .75 * smooth(.2, 2.6, t) : 1; guide.style.opacity = (((t < 3.1 && !reduced) ? smooth(.1, 1.4, t) : 1) ).toFixed(3);
+  const emS = (t < 3 && !reduced) ? .25 + .75 * smooth(.2, 2.6, t) : 1; guide.style.opacity = (((t < 3.1 && !reduced) ? smooth(.1, 1.4, t) : 1) * (narrow ? 1 - .45 * fol : 1)).toFixed(3);
   lastTree = [pos[0], pos[1], scale * emS];
   const cpos = companionStep(dtS, pos, p > .975 ? 1 : 0, true), cs = lerp(scale * emS, .6, fol);
   placeGuide(cpos, cs); pos = cpos; scale = cs;

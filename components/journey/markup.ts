@@ -97,7 +97,7 @@ export const JOURNEY_HTML = `<section class="stage" id="stage">
       <p class="eyebrow">Chapter 05 / The Creations · I</p>
       <h2>Ideas Brought to Life</h2>
       <p class="proj" data-p="sana"><strong>SANA</strong><br>A planning workspace that turns scattered creative ideas into structured blueprints.</p>
-      <p class="proj" data-p="mergab"><strong>Mergab</strong><br>A crowd-management platform that simulates exhibition visitor flow to spot congestion.</p>
+      <p class="proj" data-p="mergab"><strong>Mergab</strong><br>A smart crowd-management system for Expo that simulates visitor movement and predicts congestion.</p>
       <p class="proj" data-p="sahl"><strong>Sahl Darbak</strong><br>An AI-powered travel platform for discovering destinations, planning full trips, and connecting with other travelers.</p>
     </article>
     <article class="card card--right" id="c5">
@@ -162,7 +162,7 @@ export const JOURNEY_HTML = `<section class="stage" id="stage">
 <div class="spanel" id="spanel" role="dialog" aria-modal="true" aria-labelledby="spT">
   <div class="box"><button class="x" id="spX" aria-label="Close">×</button>
     <p class="cat" id="spC"></p><h3 id="spT"></h3><div id="spB"></div>
-    <div class="acts"><a href="#projects" id="spMore">Full story ↓</a></div>
+    <div class="acts"><a href="/projects/sana" id="spMore">Read the case study →</a></div>
   </div>
 </div>
 `;
